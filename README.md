@@ -2,6 +2,9 @@
 
 A new Flutter project.
 
+### Preview
+![animated_circle_progress](https://github.com/calebkiage/flutter_animated_circle_progress/raw/master/img/animated_circle_progress.gif "Preview")
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
