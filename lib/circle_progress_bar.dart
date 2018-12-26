@@ -25,9 +25,10 @@ class CircleProgressBar extends StatefulWidget {
 
 class CircleProgressBarState extends State<CircleProgressBar>
     with SingleTickerProviderStateMixin {
-  // Used when backgroundColor isn't given.
+  // Used in tweens where a backgroundColor isn't given.
   static const TRANSPARENT = Color(0x00000000);
   AnimationController _controller;
+
   Animation<double> curve;
   Tween<double> valueTween;
   Tween<Color> backgroundColorTween;
@@ -36,9 +37,9 @@ class CircleProgressBarState extends State<CircleProgressBar>
   @override
   void initState() {
     super.initState();
+
     this._controller = AnimationController(
-      duration:
-          this.widget.animationDuration ?? const Duration(milliseconds: 700),
+      duration: this.widget.animationDuration ?? const Duration(seconds: 1),
       vsync: this,
     );
 
@@ -52,6 +53,7 @@ class CircleProgressBarState extends State<CircleProgressBar>
       begin: 0,
       end: this.widget.value,
     );
+
     this._controller.forward();
   }
 
@@ -108,6 +110,7 @@ class CircleProgressBarState extends State<CircleProgressBar>
       aspectRatio: 1,
       child: AnimatedBuilder(
         animation: this.curve,
+        child: Container(),
         builder: (context, child) {
           final backgroundColor =
               this.backgroundColorTween?.evaluate(this.curve) ??
@@ -115,8 +118,9 @@ class CircleProgressBarState extends State<CircleProgressBar>
           final foregroundColor =
               this.foregroundColorTween?.evaluate(this.curve) ??
                   this.widget.foregroundColor;
+
           return CustomPaint(
-            child: Container(),
+            child: child,
             foregroundPainter: CircleProgressBarPainter(
               backgroundColor: backgroundColor,
               foregroundColor: foregroundColor,
@@ -146,8 +150,10 @@ class CircleProgressBarPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final Offset center = size.center(Offset.zero);
-    final Size constrainedSize = size - Offset(this.strokeWidth, this.strokeWidth);
-    final shortestSide = Math.min(constrainedSize.width, constrainedSize.height);
+    final Size constrainedSize =
+        size - Offset(this.strokeWidth, this.strokeWidth);
+    final shortestSide =
+        Math.min(constrainedSize.width, constrainedSize.height);
     final foregroundPaint = Paint()
       ..color = this.foregroundColor
       ..strokeWidth = this.strokeWidth
