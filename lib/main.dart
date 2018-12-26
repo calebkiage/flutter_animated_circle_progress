@@ -32,7 +32,7 @@ class MyHomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        title: Text("Painter Practice"),
+        title: Text("Animated Circle Progress"),
       ),
       body: Center(
         child: ProgressCard(),
