@@ -2,127 +2,31 @@ import 'dart:math' as Math;
 
 import 'package:flutter/widgets.dart';
 
-/// Draws a circular animated progress bar.
-class CircleProgressBar extends StatefulWidget {
-  final Duration animationDuration;
+class CircleProgressBar extends StatelessWidget {
   final Color backgroundColor;
   final Color foregroundColor;
   final double value;
 
   const CircleProgressBar({
     Key key,
-    this.animationDuration,
     this.backgroundColor,
     @required this.foregroundColor,
     @required this.value,
   }) : super(key: key);
 
   @override
-  CircleProgressBarState createState() {
-    return CircleProgressBarState();
-  }
-}
-
-class CircleProgressBarState extends State<CircleProgressBar>
-    with SingleTickerProviderStateMixin {
-  // Used when backgroundColor isn't given.
-  static const TRANSPARENT = Color(0x00000000);
-  AnimationController _controller;
-  Animation<double> curve;
-  Tween<double> valueTween;
-  Tween<Color> backgroundColorTween;
-  Tween<Color> foregroundColorTween;
-
-  @override
-  void initState() {
-    super.initState();
-    this._controller = AnimationController(
-      duration:
-          this.widget.animationDuration ?? const Duration(milliseconds: 700),
-      vsync: this,
-    );
-
-    this.curve = CurvedAnimation(
-      parent: this._controller,
-      curve: Curves.easeInOut,
-    );
-
-    // Build the initial required tweens.
-    this.valueTween = Tween<double>(
-      begin: 0,
-      end: this.widget.value,
-    );
-    this._controller.forward();
-  }
-
-  @override
-  void didUpdateWidget(CircleProgressBar oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    if (this.widget.value != oldWidget.value) {
-      // Try to start with the previous tween's end value. This ensures that we
-      // have a smooth transition from where the previous animation reached.
-      double beginValue =
-          this.valueTween?.evaluate(this.curve) ?? oldWidget?.value ?? 0;
-
-      // Update the value tween.
-      this.valueTween = Tween<double>(
-        begin: beginValue,
-        end: this.widget.value ?? 1,
-      );
-
-      // Clear cached color tweens when the color hasn't changed.
-      if (oldWidget?.backgroundColor != this.widget.backgroundColor) {
-        this.backgroundColorTween = ColorTween(
-          begin: oldWidget?.backgroundColor ?? TRANSPARENT,
-          end: this.widget.backgroundColor ?? TRANSPARENT,
-        );
-      } else {
-        this.backgroundColorTween = null;
-      }
-
-      if (oldWidget.foregroundColor != this.widget.foregroundColor) {
-        this.foregroundColorTween = ColorTween(
-          begin: oldWidget?.foregroundColor,
-          end: this.widget.foregroundColor,
-        );
-      } else {
-        this.foregroundColorTween = null;
-      }
-
-      this._controller
-        ..value = 0
-        ..forward();
-    }
-  }
-
-  @override
-  void dispose() {
-    this._controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final backgroundColor = this.backgroundColor;
+    final foregroundColor = this.foregroundColor;
     return AspectRatio(
       aspectRatio: 1,
-      child: AnimatedBuilder(
-        animation: this.curve,
-        builder: (context, child) {
-          final backgroundColor =
-              this.backgroundColorTween?.evaluate(this.curve) ??
-                  this.widget.backgroundColor;
-          final foregroundColor =
-              this.foregroundColorTween?.evaluate(this.curve) ??
-                  this.widget.foregroundColor;
-          return CustomPaint(
-            foregroundPainter: CircleProgressBarPainter(
-              backgroundColor: backgroundColor,
-              foregroundColor: foregroundColor,
-              percentage: this.valueTween.evaluate(this.curve),
-            ),
-          );
-        },
+      child: CustomPaint(
+        child: Container(),
+        foregroundPainter: CircleProgressBarPainter(
+          backgroundColor: backgroundColor,
+          foregroundColor: foregroundColor,
+          percentage: this.value,
+        ),
       ),
     );
   }
@@ -145,15 +49,16 @@ class CircleProgressBarPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final Offset center = size.center(Offset.zero);
-    final shortestSide = Math.min(size.width, size.height);
+    final Size constrainedSize = size - Offset(this.strokeWidth, this.strokeWidth);
+    final shortestSide = Math.min(constrainedSize.width, constrainedSize.height);
     final foregroundPaint = Paint()
       ..color = this.foregroundColor
       ..strokeWidth = this.strokeWidth
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
-    final radius = (shortestSide / 2) - (this.strokeWidth / 2).floor();
+    final radius = (shortestSide / 2);
 
-    // Start at the top. 0 is the right edge
+    // Start at the top. 0 radians represents the right edge
     final double startAngle = -(2 * Math.pi * 0.25);
     final double sweepAngle = (2 * Math.pi * (this.percentage ?? 0));
 
