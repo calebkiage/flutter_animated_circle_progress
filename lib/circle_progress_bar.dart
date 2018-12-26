@@ -116,6 +116,7 @@ class CircleProgressBarState extends State<CircleProgressBar>
               this.foregroundColorTween?.evaluate(this.curve) ??
                   this.widget.foregroundColor;
           return CustomPaint(
+            child: Container(),
             foregroundPainter: CircleProgressBarPainter(
               backgroundColor: backgroundColor,
               foregroundColor: foregroundColor,
@@ -145,15 +146,16 @@ class CircleProgressBarPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final Offset center = size.center(Offset.zero);
-    final shortestSide = Math.min(size.width, size.height);
+    final Size constrainedSize = size - Offset(this.strokeWidth, this.strokeWidth);
+    final shortestSide = Math.min(constrainedSize.width, constrainedSize.height);
     final foregroundPaint = Paint()
       ..color = this.foregroundColor
       ..strokeWidth = this.strokeWidth
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
-    final radius = (shortestSide / 2) - (this.strokeWidth / 2).floor();
+    final radius = (shortestSide / 2);
 
-    // Start at the top. 0 is the right edge
+    // Start at the top. 0 radians represents the right edge
     final double startAngle = -(2 * Math.pi * 0.25);
     final double sweepAngle = (2 * Math.pi * (this.percentage ?? 0));
 
