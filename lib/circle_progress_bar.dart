@@ -51,7 +51,7 @@ class CircleProgressBarState extends State<CircleProgressBar>
     // Build the initial required tweens.
     this.valueTween = Tween<double>(
       begin: 0,
-      end: this.widget.value,
+      end: this.widget.value != null ? this.widget.value : 0,
     );
 
     this._controller.forward();
