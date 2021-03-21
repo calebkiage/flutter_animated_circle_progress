@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_circle_progress/circle_progress_bar.dart';
-import 'package:flutter_animated_circle_progress/line_progress_bar.dart';
 
 void main() => runApp(MyApp());
 
@@ -48,7 +47,7 @@ class ProgressCard extends StatefulWidget {
 }
 
 class _ProgressCardState extends State<ProgressCard> {
-  double progressPercent = 1;
+  double progressPercent = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -70,37 +69,21 @@ class _ProgressCardState extends State<ProgressCard> {
             padding: const EdgeInsets.all(20.0),
             child: GestureDetector(
               behavior: HitTestBehavior.translucent,
-              child: Column(
-                children: [
-                  Container(
-                    color: Colors.black,
-                    child: CircleProgressBar(
-                      backgroundColor: background,
-                      foregroundColor: foreground,
-                      value: this.progressPercent,
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  Container(
-                    color: Colors.blue,
-                    child: LineProgressBar(
-                      backgroundColor: background,
-                      foregroundColor: foreground,
-                      value: this.progressPercent,
-                    ),
-                  )
-                ],
+              child: CircleProgressBar(
+                backgroundColor: background,
+                foregroundColor: foreground,
+                value: this.progressPercent,
               ),
               onTap: () {
-                final updated =
-                    ((this.progressPercent + 0.1).clamp(0.0, 1.0) * 100);
+                final updated = ((this.progressPercent + 0.1).clamp(0.0, 1.0) *
+                    100);
                 setState(() {
                   this.progressPercent = updated.round() / 100;
                 });
               },
               onDoubleTap: () {
-                final updated =
-                    ((this.progressPercent - 0.1).clamp(0.0, 1.0) * 100);
+                final updated = ((this.progressPercent - 0.1).clamp(0.0, 1.0) *
+                    100);
                 setState(() {
                   this.progressPercent = updated.round() / 100;
                 });
@@ -113,3 +96,5 @@ class _ProgressCardState extends State<ProgressCard> {
     );
   }
 }
+
+
