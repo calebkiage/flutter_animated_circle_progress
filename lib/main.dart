@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_circle_progress/circle_progress_bar.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -21,20 +23,22 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatelessWidget {
+  const MyHomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        title: Text("Animated Circle Progress"),
+        title: const Text("Animated Circle Progress"),
       ),
-      body: Center(
+      body: const Center(
         child: ProgressCard(),
       ),
     );
@@ -42,12 +46,13 @@ class MyHomePage extends StatelessWidget {
 }
 
 class ProgressCard extends StatefulWidget {
+  const ProgressCard({super.key});
   @override
-  _ProgressCardState createState() => _ProgressCardState();
+  ProgressCardState createState() => ProgressCardState();
 }
 
-class _ProgressCardState extends State<ProgressCard> {
-  double progressPercent = 0;
+class ProgressCardState extends State<ProgressCard> {
+  double progressPercent = 0.2;
 
   @override
   Widget build(BuildContext context) {
@@ -57,13 +62,15 @@ class _ProgressCardState extends State<ProgressCard> {
       foreground = Colors.green;
     } else if (progressPercent >= 0.4) {
       foreground = Colors.orange;
+    } else if (progressPercent >= 0.2) {
+      foreground = Colors.blue;
     }
 
     Color background = foreground.withOpacity(0.2);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Container(
+        SizedBox(
           width: 200,
           child: Padding(
             padding: const EdgeInsets.all(20.0),
@@ -72,29 +79,25 @@ class _ProgressCardState extends State<ProgressCard> {
               child: CircleProgressBar(
                 backgroundColor: background,
                 foregroundColor: foreground,
-                value: this.progressPercent,
+                value: progressPercent,
               ),
               onTap: () {
-                final updated = ((this.progressPercent + 0.1).clamp(0.0, 1.0) *
-                    100);
+                final updated = ((progressPercent + 0.1).clamp(0.0, 1.0) * 100);
                 setState(() {
-                  this.progressPercent = updated.round() / 100;
+                  progressPercent = updated.round() / 100;
                 });
               },
               onDoubleTap: () {
-                final updated = ((this.progressPercent - 0.1).clamp(0.0, 1.0) *
-                    100);
+                final updated = ((progressPercent - 0.1).clamp(0.0, 1.0) * 100);
                 setState(() {
-                  this.progressPercent = updated.round() / 100;
+                  progressPercent = updated.round() / 100;
                 });
               },
             ),
           ),
         ),
-        Text("${this.progressPercent * 100}%"),
+        Text("${progressPercent * 100}%"),
       ],
     );
   }
 }
-
-
